@@ -1,4 +1,4 @@
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import bodyParser from "body-parser";
 import User from "./models/user";
 import { ConnectToDB } from "./database";
@@ -12,8 +12,11 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  res.send("error accord");
+};
 
-app.post("/new-user", upload, async (req, res) => {
+app.post("/user/new", upload, async (req, res) => {
   const imageName = req.body.name + "'s" + " Image";
   const userObj = req.body;
   const result = (await handleUpload(
@@ -23,7 +26,7 @@ app.post("/new-user", upload, async (req, res) => {
   userObj.imageUrl = result.secure_url;
   const user = new User(userObj);
   user.add();
-  res.redirect("/show");
+  res.redirect("/user/all");
 });
 
 app.get("/user/all", async (req, res) => {
@@ -31,30 +34,36 @@ app.get("/user/all", async (req, res) => {
   res.send(users);
 });
 
-app.post("/find", async (req, res) => {
+app.post("/user/find", async (req, res) => {
   const userId = req.body.id;
   const foundUser = await User.find(userId);
   res.send(foundUser);
 });
 
-app.patch("/user/:userId", async (req, res) => {
+app.patch("/user/:userId", async (req, res, next) => {
   const userId = req.params.userId;
-  console.log(req.params);
   const newData = req.body;
-  const result = await User.update(userId, newData);
-  if (result?.acknowledged) {
+  try {
+    const result = await User.update(userId, newData);
     res.send(result);
+  } catch (error: any) {
+    const err = new Error(error);
+    next(err);
   }
 });
 
-app.delete("/user/:userId", async (req, res) => {
+app.delete("/user/:userId", async (req, res, next) => {
   const userId = req.params.userId;
-  const result = await User.delete(userId);
-  if (result === "ok") {
-    return res.send("User Deleted Successfully !");
+  try {
+    const result = await User.delete(userId);
+    res.send(result);
+  } catch (error: any) {
+    const err = new Error(error);
+    next(err);
   }
-  res.send(result.message);
 });
+
+app.use(errorHandler);
 
 ConnectToDB(() => {
   app.listen(3000);

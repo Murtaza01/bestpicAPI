@@ -1,5 +1,5 @@
 import { collections } from "../database";
-import { ObjectId, UpdateResult } from "mongodb";
+import { ObjectId } from "mongodb";
 
 interface props {
   name: string;
@@ -40,12 +40,10 @@ class User {
   }
 
   static async delete(id: string) {
-    try {
-      await collections.users?.deleteOne({ _id: new ObjectId(id) });
-      return "ok";
-    } catch (e: any) {
-      return e;
-    }
+    const result = await collections.users?.deleteOne({
+      _id: new ObjectId(id),
+    });
+    return result;
   }
 }
 
