@@ -1,5 +1,6 @@
 import { collections } from "../database";
-import { ObjectId } from "mongodb";
+import { ObjectId, UpdateResult } from "mongodb";
+
 interface props {
   name: string;
   age: number;
@@ -32,10 +33,16 @@ class User {
     return user;
   }
 
+  static async update(id: string, newData: {}) {
+    const query = { _id: new ObjectId(id) };
+    const result = await collections.users?.updateOne(query, { $set: newData });
+    return result;
+  }
+
   static async delete(id: string) {
     try {
       await collections.users?.deleteOne({ _id: new ObjectId(id) });
-      return "success";
+      return "ok";
     } catch (e: any) {
       return e;
     }
