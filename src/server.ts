@@ -1,10 +1,13 @@
-import express, { ErrorRequestHandler } from "express";
+import express from "express";
 import bodyParser from "body-parser";
-import User from "./models/user";
-import { ConnectToDB } from "./database";
 import multer from "multer";
-import handleUpload from "./cloudinary";
-import { UploadApiResponse } from "cloudinary";
+import { errorHandler } from "./helpers";
+import { ConnectToDB } from "./database";
+//CRUD
+import addNewUser from "./CRUD/create";
+import { findUser, getUsers } from "./CRUD/read";
+import editUser from "./CRUD/update";
+import deleteUser from "./CRUD/delete";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
@@ -12,58 +15,22 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  res.send("error accord");
-};
 
-app.post("/user/new", upload, async (req, res) => {
-  const imageName = req.body.name + "'s" + " Image";
-  const userObj = req.body;
-  const result = (await handleUpload(
-    req.file!,
-    imageName
-  )) as UploadApiResponse;
-  userObj.imageUrl = result.secure_url;
-  const user = new User(userObj);
-  user.add();
-  res.redirect("/user/all");
-});
+app.post("/user/new", upload, addNewUser);
 
-app.get("/user/all", async (req, res) => {
-  const users = await User.get();
-  res.send(users);
-});
+app.get("/user/get/all", getUsers);
 
-app.post("/user/find", async (req, res) => {
-  const userId = req.body.id;
-  const foundUser = await User.find(userId);
-  res.send(foundUser);
-});
+app.post("/user/get/:userId", findUser);
 
-app.patch("/user/:userId", async (req, res, next) => {
-  const userId = req.params.userId;
-  const newData = req.body;
-  try {
-    const result = await User.update(userId, newData);
-    res.send(result);
-  } catch (error: any) {
-    const err = new Error(error);
-    next(err);
-  }
-});
+app.patch("/user/edit/:userId", editUser);
 
-app.delete("/user/:userId", async (req, res, next) => {
-  const userId = req.params.userId;
-  try {
-    const result = await User.delete(userId);
-    res.send(result);
-  } catch (error: any) {
-    const err = new Error(error);
-    next(err);
-  }
-});
+app.delete("/user/delete/:userId", deleteUser);
 
 app.use(errorHandler);
+
+app.use((req, res, next) => {
+  res.status(404).send("Sorry can't find that!");
+});
 
 ConnectToDB(() => {
   app.listen(3000);
