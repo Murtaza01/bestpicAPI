@@ -1,8 +1,9 @@
 import express from "express";
-import bodyParser from "body-parser";
-import multer from "multer";
 import { errorHandler } from "./helpers";
 import { ConnectToDB } from "./database";
+import bodyParser from "body-parser";
+import multer from "multer";
+import cors from "cors";
 //CRUD
 import addNewUser from "./CRUD/create";
 import { findUser, getUsers } from "./CRUD/read";
@@ -13,6 +14,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

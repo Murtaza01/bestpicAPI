@@ -6,7 +6,7 @@ import User from "../models/user";
 const addNewUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userObj = req.body;
-    console.log(userObj);
+    console.log(req.body, req.file);
 
     // handling the image not exiting
     if (req.file) {

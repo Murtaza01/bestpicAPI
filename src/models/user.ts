@@ -3,18 +3,15 @@ import { ObjectId } from "mongodb";
 
 interface props {
   name: string;
-  age: number;
   imageUrl: string;
 }
 
 class User {
   name: string;
-  age: number;
   imageUrl: string;
 
-  constructor({ name, age, imageUrl }: props) {
+  constructor({ name, imageUrl }: props) {
     this.name = name;
-    this.age = age;
     this.imageUrl = imageUrl;
   }
 
