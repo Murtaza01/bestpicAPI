@@ -6,6 +6,10 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
   const newData = req.body;
   try {
     const result = await User.update(userId, newData);
+    if (!result?.modifiedCount) {
+      //todo: add status code, to the error object
+      throw Error("Id Not Found");
+    }
     res.send(result);
   } catch (e: any) {
     next(e);

@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from "express";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  res.send(err.message);
+  res.json(err.message);
 };
