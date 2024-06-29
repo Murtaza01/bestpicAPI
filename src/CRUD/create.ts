@@ -16,6 +16,7 @@ const addNewUser = async (req: Request, res: Response, next: NextFunction) => {
         imageName
       )) as UploadApiResponse;
       userObj.imageUrl = result.secure_url;
+      userObj.imageId = result.public_id;
     }
     const user = new User(userObj);
     user.add();

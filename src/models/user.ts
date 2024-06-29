@@ -4,15 +4,18 @@ import { ObjectId } from "mongodb";
 interface props {
   name: string;
   imageUrl: string;
+  imageId: string;
 }
 
 class User {
   name: string;
   imageUrl: string;
+  imageId: string;
 
-  constructor({ name, imageUrl }: props) {
+  constructor({ name, imageUrl, imageId }: props) {
     this.name = name;
     this.imageUrl = imageUrl;
+    this.imageId = imageId;
   }
 
   add() {
@@ -40,6 +43,8 @@ class User {
     const result = await collections.users?.deleteOne({
       _id: new ObjectId(id),
     });
+
+    // will throw error if its not ok and will be sent in result.
     return result;
   }
 }
