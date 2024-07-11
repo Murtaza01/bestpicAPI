@@ -8,6 +8,7 @@ export const getUsers = async (
 ) => {
   try {
     const users = await User.get();
+    throw "hello world";
     res.send(users);
   } catch (e: any) {
     next(e);
@@ -22,6 +23,7 @@ export const findUser = async (
   try {
     const userId = req.params.userId;
     const user = await User.find(userId);
+
     res.send(user);
   } catch (e: any) {
     next(e);

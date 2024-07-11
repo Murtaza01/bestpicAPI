@@ -1,11 +1,12 @@
 import * as mongodb from "mongodb";
+import { config } from "dotenv";
+
+config();
 
 export const collections: { users?: mongodb.Collection } = {};
 
 export async function ConnectToDB(callback: () => void) {
-  const client = new mongodb.MongoClient(
-    "mongodb+srv://Birdman:Birdman99@cluster0.lmgfftx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  );
+  const client = new mongodb.MongoClient(process.env.MONGO_URL as string);
   await client.connect();
 
   const db = client.db("bestpic");

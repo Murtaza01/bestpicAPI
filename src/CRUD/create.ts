@@ -7,12 +7,11 @@ const addNewUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userObj = req.body;
     console.log(req.body, req.file);
-
     // handling the image not exiting
     if (req.file) {
       const imageName = req.body.name + "'s" + " Image";
       const result = (await handleUpload(
-        req.file!,
+        req.file,
         imageName
       )) as UploadApiResponse;
       userObj.imageUrl = result.secure_url;
@@ -20,7 +19,6 @@ const addNewUser = async (req: Request, res: Response, next: NextFunction) => {
     }
     const user = new User(userObj);
     user.add();
-    res.redirect("/user/get/all");
   } catch (e: any) {
     next(e);
   }
