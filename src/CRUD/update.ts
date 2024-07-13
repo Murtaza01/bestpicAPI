@@ -1,7 +1,11 @@
 import User from "../models/user";
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 
-const editUser = async (req: Request, res: Response, next: NextFunction) => {
+export const editUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.params.userId;
     const newData = req.body;
@@ -16,4 +20,18 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default editUser;
+export const updateUserWins = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log("request is sent");
+    const winner = req.params.winner;
+    const result = await User.incWins(winner);
+    if (!result?.modifiedCount) throw Error("No Such User in our Database");
+    res.send(result);
+  } catch (e) {
+    next(e);
+  }
+};

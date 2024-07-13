@@ -47,6 +47,13 @@ class User {
     // will throw error if its not ok and will be sent in result.
     return result;
   }
+  static async incWins(winner: string) {
+    const query = { name: winner };
+    const result = await collections.users?.updateOne(query, {
+      $inc: { wins: 1 },
+    });
+    return result;
+  }
 }
 
 export default User;

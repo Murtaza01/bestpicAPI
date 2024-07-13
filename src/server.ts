@@ -7,7 +7,7 @@ import cors from "cors";
 //CRUD
 import addNewUser from "./CRUD/create";
 import { findUser, getUsers } from "./CRUD/read";
-import editUser from "./CRUD/update";
+import { editUser, updateUserWins } from "./CRUD/update";
 import deleteUser from "./CRUD/delete";
 
 const storage = multer.memoryStorage();
@@ -25,6 +25,8 @@ app.get("/user/get/all", getUsers);
 app.post("/user/get/:userId", findUser);
 
 app.patch("/user/edit/:userId", editUser);
+
+app.patch("/user/challenge/:winner", updateUserWins);
 
 app.delete("/user/delete/:userId", deleteUser);
 
