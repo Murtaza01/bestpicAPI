@@ -8,9 +8,21 @@ export const getUsers = async (
 ) => {
   try {
     const users = await User.get();
-    throw "hello world";
     res.send(users);
-  } catch (e: any) {
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getChallengers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const challengers = await User.getChallengers();
+    res.send(challengers);
+  } catch (e) {
     next(e);
   }
 };
@@ -23,9 +35,8 @@ export const findUser = async (
   try {
     const userId = req.params.userId;
     const user = await User.find(userId);
-
     res.send(user);
-  } catch (e: any) {
+  } catch (e) {
     next(e);
   }
 };

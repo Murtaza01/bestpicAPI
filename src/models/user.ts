@@ -54,6 +54,12 @@ class User {
     });
     return result;
   }
+
+  static async getChallengers() {
+    const query = { wins: { $exists: true } };
+    const result = await collections.users?.find(query).toArray();
+    return result;
+  }
 }
 
 export default User;

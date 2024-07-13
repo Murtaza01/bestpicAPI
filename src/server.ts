@@ -6,7 +6,7 @@ import multer from "multer";
 import cors from "cors";
 //CRUD
 import addNewUser from "./CRUD/create";
-import { findUser, getUsers } from "./CRUD/read";
+import { findUser, getChallengers, getUsers } from "./CRUD/read";
 import { editUser, updateUserWins } from "./CRUD/update";
 import deleteUser from "./CRUD/delete";
 
@@ -19,6 +19,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.post("/user/new", upload, addNewUser);
+
+app.get("/user/challengers", getChallengers);
 
 app.get("/user/get/all", getUsers);
 
