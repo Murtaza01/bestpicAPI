@@ -47,16 +47,21 @@ class User {
     // will throw error if its not ok and will be sent in result.
     return result;
   }
-  static async incWins(winner: string) {
-    const query = { name: winner };
+  static async incWins(name: string) {
+    const query = { name: "challenge" };
+    let winner = "mvsf.";
+    if (name === "tie") winner += "tie";
+    else {
+      winner += `${name}Wins`;
+    }
     const result = await collections.users?.updateOne(query, {
-      $inc: { wins: 1 },
+      $inc: { [winner]: 1 },
     });
     return result;
   }
 
   static async getChallengers() {
-    const query = { wins: { $exists: true } };
+    const query = { name: "challenge" };
     const result = await collections.users?.find(query).toArray();
     return result;
   }
