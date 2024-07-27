@@ -51,6 +51,7 @@ class User {
     const query = { name: "challenge" };
     let winner = "mvsf.";
     if (name === "tie") winner += "tie";
+    //mvsf.tie or mvsf.mohamedWins
     else {
       winner += `${name}Wins`;
     }
