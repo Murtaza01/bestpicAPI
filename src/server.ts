@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import cors from "cors";
 //CRUD
-import addNewUser from "./CRUD/create";
+import loginUser from "./CRUD/create";
 import { findUser, getChallengers, getUsers } from "./CRUD/read";
 import { editUser, updateUserWins } from "./CRUD/update";
 import deleteUser from "./CRUD/delete";
@@ -18,24 +18,24 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.post("/user/new", upload, addNewUser);
+app.post("/login", upload, loginUser);
 
-app.get("/user/challengers", getChallengers);
+app.get("/challengers", getChallengers);
 
-app.get("/user/get/all", getUsers);
+app.get("/users", getUsers);
 
-app.post("/user/get/:userId", findUser);
+app.get("/user/:userId", findUser);
 
-app.patch("/user/edit/:userId", editUser);
+app.patch("/user/:userId", editUser);
 
-app.patch("/user/challenge/:winner", updateUserWins);
+app.patch("/challenge/:winner", updateUserWins);
 
-app.delete("/user/delete/:userId", deleteUser);
+app.delete("/user/:userId", deleteUser);
 
 app.use(errorHandler);
 
 app.use((req, res, next) => {
-  res.status(404).send("Sorry can't find that!");
+  res.status(404).json("Sorry can't find that!");
 });
 
 ConnectToDB(() => {

@@ -26,7 +26,6 @@ export const updateUserWins = async (
   next: NextFunction
 ) => {
   try {
-    console.log("request is sent");
     const winner = req.params.winner;
     const result = await User.incWins(winner);
     if (!result?.modifiedCount) throw Error("No Such User in our Database");
