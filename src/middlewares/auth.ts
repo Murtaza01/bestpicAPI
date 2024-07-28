@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken"
 
 interface CustomRequest extends Request {
-    user?:string,
+    imageId?:string
 }
   
   interface decodedToken {
     name:string
+    imageId:string
 }
 
 const auth = async (
@@ -20,11 +21,11 @@ const auth = async (
     
         if (!token) return res.sendStatus(401)
     
-        const decoded = jwt.verify(token,process.env.JWT_SECRET as string) as decodedToken
+        const {imageId} = jwt.verify(token,process.env.JWT_SECRET as string) as decodedToken
     
-        const user = decoded.name
-    
-        req.user = user
+    // only need the id to get the object from db
+        req.imageId = imageId
+
         
         next()
 

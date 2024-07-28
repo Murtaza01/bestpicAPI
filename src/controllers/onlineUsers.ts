@@ -9,21 +9,19 @@ import { config } from "dotenv";
 config();
 
 interface CustomRequest extends Request {
-    user?:string,
+    imageId?:string
   }
   
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userObj = req.body;
-    console.log(req.body, req.file);
-
-    const token = jwt.sign(userObj,process.env.JWT_SECRET as string)
-  
+    
     // if file doesn't exit throw error
     if (!req.file) throw Error("please provide a file");
 
-    const imageName = req.body.name + "'s" + " Image";
+    const userObj:User = req.body;
+
+    const imageName = req.body.name + "-" + new Date().toISOString();
     const result = (await handleUpload(
       req.file,
       imageName
@@ -31,6 +29,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     userObj.imageUrl = result.secure_url;
     userObj.imageId = result.public_id;
 
+    const {name,imageId} = userObj
+
+    const token = jwt.sign({name,imageId},process.env.JWT_SECRET as string)
 
     const user = new User(userObj);
     user.add();
@@ -48,9 +49,14 @@ export const verifyUser = async (
     res: Response,
     next: NextFunction
 ) => {
-    const user = req.user
-    console.log(user);
-    res.json(user)
+    const id = req.imageId
+
+    if(id){
+      const userObj = await User.find(id)
+      console.log(userObj);
+      res.json(userObj)
+    }
+    
 };
 
 

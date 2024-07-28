@@ -27,10 +27,15 @@ class User {
     return result;
   }
 
-  static async find(id: string) {
-    const query = { _id: new ObjectId(id) };
-    const user = await collections.users?.findOne(query);
-    return user;
+  // static async find(id: string) {
+  //   const query = { _id: new ObjectId(id) };
+  //   const user = await collections.users?.findOne(query);
+  //   return user;
+  // }
+
+  static async find(imageId:string){
+    const user = await collections.users?.findOne({imageId})
+    return user
   }
 
   static async update(id: string, newData: {}) {
