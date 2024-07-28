@@ -27,15 +27,9 @@ class User {
     return result;
   }
 
-  // static async find(id: string) {
-  //   const query = { _id: new ObjectId(id) };
-  //   const user = await collections.users?.findOne(query);
-  //   return user;
-  // }
-
-  static async find(imageId:string){
-    const user = await collections.users?.findOne({imageId})
-    return user
+  static async find(imageId: string) {
+    const user = await collections.users?.findOne({ imageId });
+    return user;
   }
 
   static async update(id: string, newData: {}) {
@@ -44,10 +38,8 @@ class User {
     return result;
   }
 
-  static async delete(id: string) {
-    const result = await collections.users?.deleteOne({
-      _id: new ObjectId(id),
-    });
+  static async delete(imageId: string) {
+    const result = await collections.users?.deleteOne({ imageId });
 
     // will throw error if its not ok and will be sent in result.
     return result;
