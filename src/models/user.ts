@@ -8,9 +8,11 @@ interface props {
 }
 
 class User {
+  _id?:ObjectId
   name: string;
   imageUrl: string;
   imageId: string;
+
 
   constructor({ name, imageUrl, imageId }: props) {
     this.name = name;
@@ -58,7 +60,7 @@ class User {
     return result;
   }
 
-  static async getChallengers() {
+  static async getLocal() {
     const query = { name: "challenge" };
     const result = await collections.users?.find(query).toArray();
     return result;

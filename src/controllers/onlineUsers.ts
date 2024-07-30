@@ -5,12 +5,12 @@ import handleUpload from "../cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/user";
 import { config } from "dotenv";
+import { CustomRequest } from "../middlewares/auth";
 
 config();
 
-interface CustomRequest extends Request {
-  imageId?: string;
-}
+
+
 
 export const loginUser = async (
   req: Request,
@@ -24,12 +24,12 @@ export const loginUser = async (
     const userObj: User = req.body;
 
     const imageName = req.body.name + "-" + new Date().toISOString();
-    const result = (await handleUpload(
+    const image = (await handleUpload(
       req.file,
       imageName
     )) as UploadApiResponse;
-    userObj.imageUrl = result.secure_url;
-    userObj.imageId = result.public_id;
+    userObj.imageUrl = image.secure_url;
+    userObj.imageId = image.public_id;
 
     const { name, imageId } = userObj;
 
@@ -48,12 +48,12 @@ export const getLoggedUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.imageId;
+  try {
+    const user = req.user
+    res.status(200).json(user)
 
-  if (id) {
-    const userObj = await User.find(id);
-    console.log(userObj);
-    res.json(userObj);
+  } catch (e) {
+    next(e);
   }
 };
 
@@ -80,7 +80,7 @@ export const editUser = async (
     const newData = req.body;
     const result = await User.update(userId, newData);
     if (!result?.modifiedCount) throw Error("Id Not Found");
-    
+
     res.send(result);
   } catch (e: any) {
     next(e);
@@ -93,16 +93,15 @@ export const deleteUser = async (
   next: NextFunction
 ) => {
   try {
-    const id = req.imageId;
-    console.log("deleting...");
-    
-    if (!id) throw Error("imageId doesn't exist");
+    const user = req.user;
 
-    await cloudinary.uploader.destroy(id);
-    const result = await User.delete(id);
-    if(!result?.deletedCount) throw Error("item couldn't be deleted from db");
+    if (!user) throw Error("imageId doesn't exist");
 
-    res.status(200).json({message:"successfully deleted",result});
+    await cloudinary.uploader.destroy(user.imageId);
+    const result = await User.delete(user.imageId);
+    if (!result?.deletedCount) throw Error("item couldn't be deleted from db");
+
+    res.status(200).json({ message: "successfully deleted", result });
   } catch (e: any) {
     next(e);
   }

@@ -9,9 +9,6 @@ import localRouter from "./routers/localUsers"
 import error from "./middlewares/error";
 import notFound from "./middlewares/404";
 
-interface CustomRequest extends Request {
-  user?:string,
-}
 const app = express();
 
 app.use(cors());

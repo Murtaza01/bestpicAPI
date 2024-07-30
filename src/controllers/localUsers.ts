@@ -7,8 +7,8 @@ export const getUsers = async (
     next: NextFunction
   ) => {
     try {
-      const challengers = await User.getChallengers();
-      res.send(challengers);
+      const locals = await User.getLocal();
+      res.status(200).json(locals);
     } catch (e) {
       next(e);
     }

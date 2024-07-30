@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/user";
 
-interface CustomRequest extends Request {
-  imageId?: string;
+export interface CustomRequest extends Request {
+  user?: User;
 }
 
-interface decodedToken {
+type DecodedToken = {
+  name: string;
   imageId: string;
-  name:string
+  iat:number
 }
 
 const auth = async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -15,19 +17,23 @@ const auth = async (req: CustomRequest, res: Response, next: NextFunction) => {
     const authHeaders = req.headers["authorization"];
     const token = authHeaders && authHeaders.split(" ")[1];
 
-    if (!token) return res.sendStatus(401);
+    if (!token) throw Error("couldn't find token");
 
-    const { imageId } = jwt.verify(
+    const data = jwt.verify(
       token,
       process.env.JWT_SECRET as string
-    ) as decodedToken;
+    ) as DecodedToken;
 
-    // only need the id to get the object from db
-    req.imageId = imageId;
+    const user = await User.find(data.imageId) as User;
 
+    // user might not be fetched from db
+    if (!user) throw Error("couldn't get user data")
+
+    req.user = user;
     next();
+
   } catch (e) {
-    next(e)
+    next(e);
   }
 };
 
