@@ -8,7 +8,7 @@ interface props {
 }
 
 class User {
-  _id?:ObjectId
+  _id?: ObjectId
   name: string;
   imageUrl: string;
   imageId: string;
@@ -46,22 +46,17 @@ class User {
     // will throw error if its not ok and will be sent in result.
     return result;
   }
-  static async incWins(name: string) {
-    const query = { name: "challenge" };
-    let winner = "mvsf.";
-    if (name === "tie") winner += "tie";
-    //mvsf.tie or mvsf.mohamedWins
-    else {
-      winner += `${name}Wins`;
-    }
+  static async incWins(winner: string) {
+    const query = { name: "localUsers" };
+    
     const result = await collections.users?.updateOne(query, {
-      $inc: { [winner]: 1 },
+      $inc: { [`mohamedANDfatima.${winner}`]: 1 },
     });
     return result;
   }
 
   static async getLocal() {
-    const query = { name: "challenge" };
+    const query = { name: "localUsers" };
     const result = await collections.users?.find(query).toArray();
     return result;
   }

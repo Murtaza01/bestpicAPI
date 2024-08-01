@@ -23,7 +23,7 @@ export const updateUserWins = async (
     const winner = req.params.winner;
     const result = await User.incWins(winner);
     if (!result?.modifiedCount) throw Error("No Such User in our Database");
-    res.json("updated successfully");
+    res.status(200).json("updated successfully");
   } catch (e) {
     next(e);
   }
