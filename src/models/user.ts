@@ -8,16 +8,17 @@ interface props {
 }
 
 class User {
-  _id?: ObjectId
+  _id?: ObjectId;
   name: string;
   imageUrl: string;
   imageId: string;
-
+  wins: number;
 
   constructor({ name, imageUrl, imageId }: props) {
     this.name = name;
     this.imageUrl = imageUrl;
     this.imageId = imageId;
+    this.wins = 0;
   }
 
   add() {
@@ -25,7 +26,9 @@ class User {
   }
 
   static async get() {
-    const result = await collections.users?.find().toArray();
+    // only return users with imageId (onlineUsers)
+    const query = { imageId: { $exists: true } };
+    const result = await collections.users?.find(query).toArray();
     return result;
   }
 
@@ -46,9 +49,17 @@ class User {
     // will throw error if its not ok and will be sent in result.
     return result;
   }
-  static async incWins(winner: string) {
+
+  static async increaseOnlineWins(id: string) {
+    const query = { _id: new ObjectId(id) };
+    const result = await collections.users?.updateOne(query, {
+      $inc: { wins: 1 },
+    });
+    return result
+  }
+
+  static async increaseLocalWins(winner: string) {
     const query = { name: "localUsers" };
-    
     const result = await collections.users?.updateOne(query, {
       $inc: { [`mohamedANDfatima.${winner}`]: 1 },
     });

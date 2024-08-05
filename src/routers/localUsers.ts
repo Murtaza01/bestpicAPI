@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { getUsers } from "../controllers/onlineUsers";
-import { updateUserWins } from "../controllers/localUsers";
+import { getLocalUsers, updateUserWins } from "../controllers/localUsers";
 
 const router = Router()
 
 
-router.get("/users", getUsers);
+router.get("/users", getLocalUsers);
 
 router.patch("/:winner", updateUserWins);
 

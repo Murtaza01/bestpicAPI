@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
 
-export const getUsers = async (
+export const getLocalUsers = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -21,7 +21,8 @@ export const updateUserWins = async (
 ) => {
   try {
     const winner = req.params.winner;
-    const result = await User.incWins(winner);
+    const result = await User.increaseLocalWins(winner);
+
     if (!result?.modifiedCount) throw Error("No Such User in our Database");
     res.status(200).json("updated successfully");
   } catch (e) {

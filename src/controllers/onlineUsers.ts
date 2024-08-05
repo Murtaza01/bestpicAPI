@@ -20,7 +20,6 @@ export const loginUser = async (
   try {
     // if file doesn't exit throw error
     if (!req.file) throw Error("please provide a file");
-
     const userObj: User = req.body;
 
     const imageName = req.body.name + "-" + new Date().toISOString();
@@ -57,31 +56,29 @@ export const getLoggedUser = async (
   }
 };
 
-export const getUsers = async (
+export const getOnlineUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const users = await User.get();
-    res.send(users);
+    res.status(200).send(users);
   } catch (e) {
     next(e);
   }
 };
 
-export const editUser = async (
+export const updateUserWins = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const userId = req.params.userId;
-    const newData = req.body;
-    const result = await User.update(userId, newData);
-    if (!result?.modifiedCount) throw Error("Id Not Found");
-
-    res.send(result);
+    const results = await User.increaseOnlineWins(userId)
+    if(!results?.modifiedCount) throw Error("did not increase user wins")
+    res.status(200).json({message:"successfully updated",results}) 
   } catch (e: any) {
     next(e);
   }
