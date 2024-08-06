@@ -6,7 +6,7 @@ config();
 export const collections: { users?: mongodb.Collection } = {};
 
 export async function ConnectToDB(callback: () => void) {
-  const client = new mongodb.MongoClient(process.env.MONGO_URL as string);
+  const client = new mongodb.MongoClient(process.env.MONGODB_URI as string);
   await client.connect();
 
   const db = client.db("bestpic");
