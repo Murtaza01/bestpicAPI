@@ -24,7 +24,7 @@ app.use(error);
 app.use(notFound);
 
 ConnectToDB(() => {
-  app.listen();
+  app.listen(3000);
 });
 
 export default app
