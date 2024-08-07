@@ -3,8 +3,8 @@ import { getLocalUsers, updateUserWins } from "../controllers/localUsers";
 
 const router = Router()
 
-
-router.get("/users", getLocalUsers);
+// localusers
+router.get("/", getLocalUsers);
 
 router.patch("/:winner", updateUserWins);
 

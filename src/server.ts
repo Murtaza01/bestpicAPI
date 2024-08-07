@@ -16,9 +16,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use("/onlineUsers", onlineRouter);
+app.use("/onlineusers", onlineRouter);
 
-app.use("/localUsers", localRouter);
+app.use("/localusers", localRouter);
 
 app.use(error);
 
