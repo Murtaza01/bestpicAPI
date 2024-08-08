@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { config } from "dotenv";
 config();
 
@@ -22,7 +22,13 @@ async function handleUpload(file: Express.Multer.File, imageName: string) {
 
   try {
     const result = await cloudinary.uploader.upload(image, options);
-    return result;
+    // optimize the image
+    const optimizeUrl = cloudinary.url(result.public_id, {
+      fetch_format: "auto",
+      quality: "auto",
+    });
+    // only sending the needed info with the optimized image
+    return { public_id: result.public_id, optimizeUrl };
   } catch (error) {
     return error;
   }

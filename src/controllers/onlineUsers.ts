@@ -9,8 +9,10 @@ import { CustomRequest } from "../middlewares/auth";
 
 config();
 
-
-
+type CloudImage = {
+  public_id: string;
+  optimizeUrl: string;
+};
 
 export const loginUser = async (
   req: Request,
@@ -23,12 +25,10 @@ export const loginUser = async (
     const userObj: User = req.body;
 
     const imageName = req.body.name + "-" + new Date().toISOString();
-    const image = (await handleUpload(
-      req.file,
-      imageName
-    )) as UploadApiResponse;
-    userObj.imageUrl = image.secure_url;
-    userObj.imageId = image.public_id;
+    const cloudImage = (await handleUpload(req.file, imageName)) as CloudImage;
+
+    userObj.imageUrl = cloudImage.optimizeUrl;
+    userObj.imageId = cloudImage.public_id;
 
     const { name, imageId } = userObj;
 
@@ -48,9 +48,8 @@ export const getLoggedUser = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.user
-    res.status(200).json(user)
-
+    const user = req.user;
+    res.status(200).json(user);
   } catch (e) {
     next(e);
   }
@@ -76,9 +75,9 @@ export const updateUserWins = async (
 ) => {
   try {
     const userId = req.params.userId;
-    const results = await User.increaseOnlineWins(userId)
-    if(!results?.modifiedCount) throw Error("did not increase user wins")
-    res.status(200).json({message:"successfully updated",results}) 
+    const results = await User.increaseOnlineWins(userId);
+    if (!results?.modifiedCount) throw Error("did not increase user wins");
+    res.status(200).json({ message: "successfully updated", results });
   } catch (e: any) {
     next(e);
   }
